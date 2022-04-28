@@ -13,11 +13,20 @@ async function expectException (promise, expectedError) {
     if (error.message.indexOf(expectedError) === -1) {
       // When the exception was a revert, the resulting string will include only
       // the revert reason, otherwise it will be the type of exception (e.g. 'invalid opcode')
-      const actualError = error.message.replace(
-        /Returned error: VM Exception while processing transaction: (revert )?/,
-        '',
-      );
-      expect(actualError).to.equal(expectedError, 'Wrong kind of exception received');
+      if (error.message.contains('Returned error')){
+        const actualError = error.message.replace(
+            /Returned error: VM Exception while processing transaction: (revert )?/,
+            '',
+        );
+        expect(actualError).to.equal(expectedError, 'Wrong kind of exception received');
+      }
+      if (error.message.contains('ProviderError')){
+        const actualError = error.message.replace(
+            /ProviderError: VM Exception while processing transaction: (revert )?/,
+            '',
+        );
+        expect(actualError).to.equal(expectedError, 'Wrong kind of exception received');
+      }
     }
     return;
   }
